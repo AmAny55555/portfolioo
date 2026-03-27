@@ -9,6 +9,8 @@ import { getContact } from "./service";
 
 export default function Contact() {
   const [contact, setContact] = useState<ContactType | null>(null);
+  const [name, setName] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const fetchContact = async () => {
@@ -23,6 +25,16 @@ export default function Contact() {
     ? `https://wa.me/2${contact.whatsapp}`
     : "#";
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const phone = contact?.whatsapp ? `2${contact.whatsapp}` : "201283087083";
+    const text = `الاسم: ${name}\nالرسالة: ${message}`;
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+
+    window.open(url, "_blank");
+  };
+
   return (
     <section id="contact" className="w-full">
       <div className="w-full px-4 md:px-8 lg:px-16 xl:px-24 mt-14 md:mt-20 mb-14">
@@ -34,8 +46,7 @@ export default function Contact() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            {[ 
+            {[
               {
                 icon: Phone,
                 title: contact?.manager_name || "المهندس محمد حافظ",
@@ -79,7 +90,36 @@ export default function Contact() {
             })}
           </div>
 
-          <div className="flex justify-center mt-8">
+          <div className="mt-10 md:mt-12">
+    <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-6">
+  <input
+    type="text"
+    placeholder="اسمك"
+    value={name}
+    onChange={(e) => setName(e.target.value)}
+    required
+    className="w-full rounded-xl border border-[#D9E2EC] px-4 py-3 outline-none focus:border-[#1DA1F2]"
+  />
+
+  <textarea
+    placeholder="اكتب رسالتك"
+    rows={4}
+    value={message}
+    onChange={(e) => setMessage(e.target.value)}
+    required
+    className="w-full mt-2  mb-2 rounded-xl border border-[#D9E2EC] px-4 py-3 outline-none focus:border-[#1DA1F2]"
+  />
+
+  <button
+    type="submit"
+    className="w-full bg-[#FF7A00] text-white py-3 rounded-full font-semibold hover:bg-[#e96f00] transition"
+  >
+    ارسال عبر واتساب
+  </button>
+</form>
+          </div>
+
+          <div className="flex justify-center mt-10">
             <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
               <Button className="bg-[#FF7A00] hover:bg-[#e96f00] text-white px-8 py-6 rounded-full shadow-sm">
                 راسلنا على واتساب

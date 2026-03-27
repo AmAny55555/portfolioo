@@ -7,5 +7,6 @@ export const endpoints = {
   features: `${API_BASE_URL}/api/features`,
   portfolio: `${API_BASE_URL}/api/portfolio`,
   contact: `${API_BASE_URL}/api/contact`,
+  about: `${API_BASE_URL}/api/about`,
+  products: `${API_BASE_URL}/api/products`,
 };
-

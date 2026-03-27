@@ -20,6 +20,8 @@ public function run(): void
         CompanySeeder::class,
            FeatureSeeder::class,
                    ContactSeeder::class,
+                   AboutSeeder::class,
+                   ProductSeeder::class,
 
     ]);
 }

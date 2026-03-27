@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FiArrowLeft, FiPhoneCall } from "react-icons/fi";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getCompany } from "./service";
 import type { Company } from "./types";
 
@@ -35,34 +35,33 @@ export default function Hero() {
   const [typedDescription, setTypedDescription] = useState("");
   const [showFirstButton, setShowFirstButton] = useState(false);
   const [showSecondButton, setShowSecondButton] = useState(false);
+  const [isContentReady, setIsContentReady] = useState(false);
 
   const prefersReducedMotion = usePrefersReducedMotion();
+  const hasAnimatedRef = useRef(false);
 
   useEffect(() => {
     const fetchCompany = async () => {
       const data = await getCompany();
       setCompany(data);
+      setIsContentReady(true);
     };
 
     fetchCompany();
   }, []);
 
-  const content = useMemo(
-    () => ({
-      name: company?.name || "المستقبل تك",
-      description: company?.description || "",
-    }),
-    [company]
-  );
-
   useEffect(() => {
-    if (!content.name && !content.description) return;
+    if (!isContentReady || hasAnimatedRef.current) return;
+
+    const name = company?.name || "المستقبل تك";
+    const description = company?.description || "";
 
     if (prefersReducedMotion) {
-      setTypedName(content.name);
-      setTypedDescription(content.description);
+      setTypedName(name);
+      setTypedDescription(description);
       setShowFirstButton(true);
       setShowSecondButton(true);
+      hasAnimatedRef.current = true;
       return;
     }
 
@@ -80,6 +79,11 @@ export default function Hero() {
       speed: number
     ) =>
       new Promise<void>((resolve) => {
+        if (!text) {
+          resolve();
+          return;
+        }
+
         let i = 0;
 
         const run = () => {
@@ -101,17 +105,18 @@ export default function Hero() {
       });
 
     const startTyping = async () => {
-      await typeText(content.name, setTypedName, 60);
-      await typeText(content.description, setTypedDescription, 18);
+      await typeText(name, setTypedName, 55);
+      await typeText(description, setTypedDescription, 16);
 
       if (!cancelled) {
         setShowFirstButton(true);
 
-        const id = setTimeout(() => {
+        const firstBtnDelay = setTimeout(() => {
           if (!cancelled) setShowSecondButton(true);
-        }, 220);
+        }, 180);
 
-        timeouts.push(id);
+        timeouts.push(firstBtnDelay);
+        hasAnimatedRef.current = true;
       }
     };
 
@@ -121,12 +126,16 @@ export default function Hero() {
       cancelled = true;
       timeouts.forEach(clearTimeout);
     };
-  }, [content, prefersReducedMotion]);
+  }, [company, isContentReady, prefersReducedMotion]);
 
   const heroImage = company?.hero_image || "/1.jpg";
 
   return (
-    <section id="hero" className="w-full overflow-x-hidden" dir="rtl">
+    <section
+      id="hero"
+      className="w-full overflow-x-hidden"
+      dir="rtl"
+    >
       <div className="mt-4 w-full px-2 min-[500px]:px-3 md:mt-10 md:px-4 lg:mt-12 lg:px-6 xl:px-8">
         <div className="relative overflow-hidden rounded-[18px] min-[500px]:rounded-[22px] lg:rounded-[28px] border border-[#E5E7EB] bg-white shadow-[0_14px_40px_rgba(11,60,93,0.08)] min-h-[360px] min-[500px]:min-h-[420px] md:min-h-[500px]">
           <Image
