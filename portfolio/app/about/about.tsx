@@ -1,23 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Info } from "lucide-react";
-import { getAbout } from "./service";
-import type { AboutType } from "./types";
+import { ABOUT } from "@/lib/constants/about";
 
 export default function About() {
-  const [about, setAbout] = useState<AboutType | null>(null);
-
-  useEffect(() => {
-    const fetchAbout = async () => {
-      const data = await getAbout();
-      setAbout(data);
-    };
-
-    fetchAbout();
-  }, []);
-
   return (
     <section
       id="about"
@@ -32,20 +19,20 @@ export default function About() {
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
         >
-      
+     
           <div className="flex items-center justify-center gap-3 mb-10">
             <div className="h-10 w-10 md:h-11 md:w-11 flex items-center justify-center rounded-xl bg-[#EAF6FF] text-[#1DA1F2] shrink-0">
               <Info size={20} />
             </div>
 
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#0B3C5D]">
-              {about?.title || "من نحن"}
+              {ABOUT.title}
             </h2>
           </div>
 
-      
+        
           <p className="text-[#1F1F1F] text-sm sm:text-base md:text-lg leading-7 sm:leading-8 md:leading-9 text-center max-w-3xl mx-auto min-h-[80px]">
-            {about?.description || ""}
+            {ABOUT.description}
           </p>
         </motion.div>
       </div>

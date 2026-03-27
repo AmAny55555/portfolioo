@@ -5,8 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FiArrowLeft, FiPhoneCall } from "react-icons/fi";
 import { useEffect, useRef, useState } from "react";
-import { getCompany } from "./service";
-import type { Company } from "./types";
+import { COMPANY } from "@/lib/constants/company";
 
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false);
@@ -30,31 +29,19 @@ function usePrefersReducedMotion() {
 }
 
 export default function Hero() {
-  const [company, setCompany] = useState<Company | null>(null);
   const [typedName, setTypedName] = useState("");
   const [typedDescription, setTypedDescription] = useState("");
   const [showFirstButton, setShowFirstButton] = useState(false);
   const [showSecondButton, setShowSecondButton] = useState(false);
-  const [isContentReady, setIsContentReady] = useState(false);
 
   const prefersReducedMotion = usePrefersReducedMotion();
   const hasAnimatedRef = useRef(false);
 
   useEffect(() => {
-    const fetchCompany = async () => {
-      const data = await getCompany();
-      setCompany(data);
-      setIsContentReady(true);
-    };
+    if (hasAnimatedRef.current) return;
 
-    fetchCompany();
-  }, []);
-
-  useEffect(() => {
-    if (!isContentReady || hasAnimatedRef.current) return;
-
-    const name = company?.name || "المستقبل تك";
-    const description = company?.description || "";
+    const name = COMPANY.name;
+    const description = COMPANY.description;
 
     if (prefersReducedMotion) {
       setTypedName(name);
@@ -126,21 +113,15 @@ export default function Hero() {
       cancelled = true;
       timeouts.forEach(clearTimeout);
     };
-  }, [company, isContentReady, prefersReducedMotion]);
-
-  const heroImage = company?.hero_image || "/1.jpg";
+  }, [prefersReducedMotion]);
 
   return (
-    <section
-      id="hero"
-      className="w-full overflow-x-hidden"
-      dir="rtl"
-    >
+    <section id="hero" className="w-full overflow-x-hidden" dir="rtl">
       <div className="mt-4 w-full px-2 min-[500px]:px-3 md:mt-10 md:px-4 lg:mt-12 lg:px-6 xl:px-8">
         <div className="relative overflow-hidden rounded-[18px] min-[500px]:rounded-[22px] lg:rounded-[28px] border border-[#E5E7EB] bg-white shadow-[0_14px_40px_rgba(11,60,93,0.08)] min-h-[360px] min-[500px]:min-h-[420px] md:min-h-[500px]">
           <Image
-            src={heroImage}
-            alt={company?.name || "المستقبل تك"}
+            src={COMPANY.hero_image}
+            alt={COMPANY.name}
             fill
             priority
             className="object-cover opacity-30"
@@ -171,18 +152,18 @@ export default function Hero() {
                       : "opacity-0 translate-y-4 pointer-events-none"
                   }`}
                 >
-                  <Button
-                    asChild
-                    className="group w-full sm:w-auto h-11 min-[500px]:h-auto rounded-full bg-[#FF7A00] px-5 min-[500px]:px-8 py-2.5 min-[500px]:py-4 md:px-9 md:py-5 text-sm min-[500px]:text-base font-bold text-white shadow-md transition-all duration-300 hover:bg-[#e96f00] hover:shadow-[0_10px_25px_rgba(255,122,0,0.25)] hover:-translate-y-0.5"
-                  >
-                    <Link
-                      href="#services"
-                      className="flex items-center justify-center gap-2 w-full whitespace-nowrap"
-                    >
-                      <FiArrowLeft className="text-base min-[500px]:text-lg transition-transform duration-300 group-hover:-translate-x-1 shrink-0" />
-                      <span className="truncate">عرض خدماتنا</span>
-                    </Link>
-                  </Button>
+               <Button
+  asChild
+  className="group w-full sm:w-auto h-11 min-[500px]:h-auto rounded-full bg-[#FF7A00] hover:bg-[#FF7A00] px-5 min-[500px]:px-8 py-2.5 min-[500px]:py-4 md:px-9 md:py-5 text-sm min-[500px]:text-base font-bold text-white shadow-md transition-all duration-300 hover:shadow-[0_0_25px_rgba(255,122,0,0.7)] hover:-translate-y-0.5"
+>
+  <Link
+    href="#services"
+    className="flex items-center justify-center gap-2 w-full whitespace-nowrap"
+  >
+    <FiArrowLeft className="text-base min-[500px]:text-lg transition-transform duration-300 group-hover:-translate-x-1 shrink-0" />
+    <span className="truncate">عرض خدماتنا</span>
+  </Link>
+</Button>
                 </div>
 
                 <div
@@ -192,19 +173,18 @@ export default function Hero() {
                       : "opacity-0 translate-y-4 pointer-events-none"
                   }`}
                 >
-                  <Button
-                    asChild
-                    variant="outline"
-                    className="group w-full sm:w-auto h-11 min-[500px]:h-auto rounded-full border-[#0B3C5D] px-5 min-[500px]:px-8 py-2.5 min-[500px]:py-4 md:px-9 md:py-5 text-sm min-[500px]:text-base font-bold text-[#0B3C5D] bg-white/80 shadow-sm transition-all duration-300 hover:bg-[#0B3C5D] hover:text-white hover:shadow-[0_10px_25px_rgba(11,60,93,0.15)] hover:-translate-y-0.5"
-                  >
-                    <Link
-                      href="#contact"
-                      className="flex items-center justify-center gap-2 w-full whitespace-nowrap"
-                    >
-                      <FiPhoneCall className="text-base min-[500px]:text-lg transition-transform duration-300 group-hover:scale-110 shrink-0" />
-                      <span className="truncate">تواصل معنا</span>
-                    </Link>
-                  </Button>
+<Button
+  asChild
+  className="group w-full sm:w-auto h-11 min-[500px]:h-auto rounded-full bg-[#FF7A00] text-white px-5 min-[500px]:px-8 py-2.5 min-[500px]:py-4 md:px-9 md:py-5 text-sm min-[500px]:text-base font-bold shadow-md transition-all duration-300 hover:bg-[#FF7A00] hover:text-white  hover:-translate-y-0.5 focus-visible:ring-0"
+>
+  <Link
+    href="#services"
+    className="flex items-center justify-center gap-2 w-full whitespace-nowrap"
+  >
+    <FiArrowLeft className="text-base min-[500px]:text-lg transition-transform duration-300 group-hover:-translate-x-1 shrink-0" />
+    <span className="truncate">عرض خدماتنا</span>
+  </Link>
+</Button>
                 </div>
               </div>
             </div>
