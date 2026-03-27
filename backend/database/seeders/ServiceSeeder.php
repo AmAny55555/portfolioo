@@ -4,11 +4,17 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Service;
+use Illuminate\Support\Facades\DB;
 
 class ServiceSeeder extends Seeder
 {
     public function run(): void
     {
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        Service::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         Service::create([
             'title' => 'صيانة الأجهزة الإلكترونية',
             'description' => 'نقدم خدمات صيانة متكاملة لجميع أنواع الشاشات (LED - LCD)، والرسيفر، وأجهزة DVR والكاميرات، باستخدام أحدث الأجهزة وقطع غيار أصلية لضمان أفضل أداء.',
